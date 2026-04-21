@@ -1,0 +1,46 @@
+[project]
+name = "qortara-governance-langchain"
+version = "0.1.0"
+description = "Qortara Governance — LangChain sidecar SDK. Deep tool-dispatch interception + Portable Trust Attestations + policy enforcement companion to LangSmith."
+authors = [{ name = "MythologIQ Labs", email = "team@mythologiq.studio" }]
+license = { text = "Apache-2.0" }
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["langchain", "governance", "policy", "trust", "agents", "ai"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "langchain-core>=0.3",
+    "httpx>=0.28",
+    "opentelemetry-api>=1.30",
+    "qortara-protocol==0.1.0",
+]
+
+[project.optional-dependencies]
+langgraph = ["langgraph>=0.2"]
+dev = ["pytest>=9.0.3", "pytest-asyncio>=1.3.0"]
+
+[project.urls]
+Homepage = "https://qortara.com/governance"
+Repository = "https://github.com/MythologIQ-Labs-LLC/qortara-governance-langchain"
+Issues = "https://github.com/MythologIQ-Labs-LLC/qortara-governance-langchain/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qortara_governance"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"

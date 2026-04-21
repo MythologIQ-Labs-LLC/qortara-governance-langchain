@@ -1,0 +1,46 @@
+name: Feature request
+description: Propose an enhancement to qortara-governance-langchain
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Good proposals describe the use case first and the mechanism second. Small, composable additions are preferred.
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: What are you trying to do? What's the problem you're solving?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed solution
+      description: How would you like to see this addressed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds, other libraries, or prior art.
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Links to related issues, LangChain upstream discussions, or code samples.
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This request is about the SDK (patches, config, public API), not the sidecar or policy engine.
+          required: true
+        - label: I have searched existing issues for duplicates.
+          required: true
