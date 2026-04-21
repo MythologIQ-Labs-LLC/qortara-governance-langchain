@@ -4,6 +4,7 @@ Complements the deep-hook patches by observing chain boundaries, retriever
 calls, and memory operations that the patches don't intercept. Emits
 EvidenceRecord with decision_kind=observe. Never raises from callback methods.
 """
+
 from __future__ import annotations
 
 import time
@@ -27,7 +28,9 @@ from qortara_protocol import (
 )
 
 
-def _build_observe_request(action_type: ActionType, resource: str) -> ActionRequest | None:
+def _build_observe_request(
+    action_type: ActionType, resource: str
+) -> ActionRequest | None:
     ctx = get_context()
     if ctx is None:
         return None
@@ -83,11 +86,15 @@ class QortaraCallbackHandler(BaseCallbackHandler):
         except Exception:  # noqa: BLE001 — callback never blocks
             pass
 
-    def on_chain_start(self, serialized: dict[str, Any], inputs: dict[str, Any], **kwargs: Any) -> None:
+    def on_chain_start(
+        self, serialized: dict[str, Any], inputs: dict[str, Any], **kwargs: Any
+    ) -> None:
         name = (serialized or {}).get("name", "chain")
         self._emit(ActionType.CHAIN_BOUNDARY, str(name))
 
-    def on_retriever_start(self, serialized: dict[str, Any], query: str, **kwargs: Any) -> None:
+    def on_retriever_start(
+        self, serialized: dict[str, Any], query: str, **kwargs: Any
+    ) -> None:
         name = (serialized or {}).get("name", "retriever")
         self._emit(ActionType.RETRIEVAL, str(name))
 

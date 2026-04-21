@@ -3,6 +3,7 @@
 No side effects. No imports from patch/client modules. Only depends on
 qortara_protocol + context module. Keeps complexity isolated for testing.
 """
+
 from __future__ import annotations
 
 import time

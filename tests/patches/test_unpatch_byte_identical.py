@@ -1,4 +1,5 @@
 """After unpatch_all(): BaseTool.invoke is byte-identical to pre-patch."""
+
 from __future__ import annotations
 
 from langchain_core.tools import BaseTool

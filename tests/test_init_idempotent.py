@@ -1,4 +1,5 @@
 """init() called twice with same args => no-op; different args => RuntimeError."""
+
 from __future__ import annotations
 
 import pytest
@@ -14,7 +15,9 @@ def _teardown() -> None:
     qortara_governance.unpatch_all()
 
 
-def _fake_launch(monkeypatch: pytest.MonkeyPatch, endpoint: str = "http://127.0.0.1:9999") -> None:
+def _fake_launch(
+    monkeypatch: pytest.MonkeyPatch, endpoint: str = "http://127.0.0.1:9999"
+) -> None:
     """Monkeypatch launcher + client health to avoid real subprocess + HTTP."""
     from qortara_governance import launcher
 
@@ -25,7 +28,9 @@ def _fake_launch(monkeypatch: pytest.MonkeyPatch, endpoint: str = "http://127.0.
             self.process = None
 
     monkeypatch.setattr(
-        launcher, "launch", lambda *, existing_endpoint: _LaunchResult(existing_endpoint or endpoint)
+        launcher,
+        "launch",
+        lambda *, existing_endpoint: _LaunchResult(existing_endpoint or endpoint),
     )
     monkeypatch.setattr(SidecarClient, "require_reachable", lambda self: None)
 
@@ -42,7 +47,9 @@ def test_init_twice_different_args_raises(monkeypatch: pytest.MonkeyPatch) -> No
     _fake_launch(monkeypatch)
     qortara_governance.init(tenant_key="k1", sidecar_endpoint="http://127.0.0.1:9999")
     with pytest.raises(RuntimeError):
-        qortara_governance.init(tenant_key="k2", sidecar_endpoint="http://127.0.0.1:9999")
+        qortara_governance.init(
+            tenant_key="k2", sidecar_endpoint="http://127.0.0.1:9999"
+        )
 
 
 def test_unpatch_all_allows_reinit(monkeypatch: pytest.MonkeyPatch) -> None:

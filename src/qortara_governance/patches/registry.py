@@ -4,6 +4,7 @@ Maintains ONE patch set per process. Re-invoking `apply_patches` with the same
 client is a no-op (idempotent). Re-invoking with a different client raises
 unless `unpatch_all` is called first.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

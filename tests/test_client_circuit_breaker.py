@@ -1,4 +1,5 @@
 """Circuit breaker: N 5xx in a row => deny-all; recovers after cooldown."""
+
 from __future__ import annotations
 
 import time

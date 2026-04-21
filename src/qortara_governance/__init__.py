@@ -7,6 +7,7 @@ Public API:
     qortara_exempt (decorator marking tools to skip enforcement)
     QortaraPolicyDenied / QortaraApprovalRequired / QortaraSidecarUnavailable
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass

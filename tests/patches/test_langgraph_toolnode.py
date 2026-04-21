@@ -1,12 +1,19 @@
 """LangGraph ToolNode patches — applied when langgraph installed; silent skip otherwise."""
+
 from __future__ import annotations
 
 import pytest
 
-from qortara_governance.patches.langgraph_patches import _langgraph_available, apply, unpatch
+from qortara_governance.patches.langgraph_patches import (
+    _langgraph_available,
+    apply,
+    unpatch,
+)
 
 
-def test_langgraph_silent_skip_when_unavailable(monkeypatch: pytest.MonkeyPatch, fake_client) -> None:  # noqa: ANN001
+def test_langgraph_silent_skip_when_unavailable(
+    monkeypatch: pytest.MonkeyPatch, fake_client
+) -> None:  # noqa: ANN001
     """When langgraph absent, apply() returns None and unpatch() is no-op."""
     from qortara_governance.patches import langgraph_patches
 

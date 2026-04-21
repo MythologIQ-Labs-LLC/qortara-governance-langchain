@@ -8,6 +8,7 @@ Exports:
     apply() -> originals  # install patches; returns originals for unpatch
     unpatch(originals)    # restore byte-identical originals
 """
+
 from __future__ import annotations
 
 from typing import Any, Callable
@@ -47,7 +48,9 @@ def _decide_or_raise(tool: object, tool_input: Any, client: SidecarClient) -> No
         )
 
 
-def _make_sync_wrapper(original: _OriginalMethod, client: SidecarClient) -> _OriginalMethod:
+def _make_sync_wrapper(
+    original: _OriginalMethod, client: SidecarClient
+) -> _OriginalMethod:
     def wrapper(self: object, input: Any, config: Any = None, **kwargs: Any) -> Any:
         _decide_or_raise(self, input, client)
         return original(self, input, config, **kwargs)
@@ -58,8 +61,12 @@ def _make_sync_wrapper(original: _OriginalMethod, client: SidecarClient) -> _Ori
     return wrapper
 
 
-def _make_async_wrapper(original: _OriginalMethod, client: SidecarClient) -> _OriginalMethod:
-    async def wrapper(self: object, input: Any, config: Any = None, **kwargs: Any) -> Any:
+def _make_async_wrapper(
+    original: _OriginalMethod, client: SidecarClient
+) -> _OriginalMethod:
+    async def wrapper(
+        self: object, input: Any, config: Any = None, **kwargs: Any
+    ) -> Any:
         _decide_or_raise(self, input, client)
         return await original(self, input, config, **kwargs)
 

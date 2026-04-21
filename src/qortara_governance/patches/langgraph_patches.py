@@ -1,4 +1,5 @@
 """LangGraph ToolNode.invoke patches — optional (silent skip if langgraph absent)."""
+
 from __future__ import annotations
 
 from typing import Any, Callable
@@ -29,14 +30,25 @@ def _extract_tool_names(state: Any) -> list[str]:
     Falls back to ["<unknown>"] if structure doesn't match.
     """
     try:
-        messages = state.get("messages", []) if isinstance(state, dict) else getattr(state, "messages", [])
+        messages = (
+            state.get("messages", [])
+            if isinstance(state, dict)
+            else getattr(state, "messages", [])
+        )
         if not messages:
             return ["<unknown>"]
         last = messages[-1]
-        tool_calls = getattr(last, "tool_calls", None) or (last.get("tool_calls") if isinstance(last, dict) else None)
+        tool_calls = getattr(last, "tool_calls", None) or (
+            last.get("tool_calls") if isinstance(last, dict) else None
+        )
         if not tool_calls:
             return ["<unknown>"]
-        return [tc.get("name", "<unknown>") if isinstance(tc, dict) else getattr(tc, "name", "<unknown>") for tc in tool_calls]
+        return [
+            tc.get("name", "<unknown>")
+            if isinstance(tc, dict)
+            else getattr(tc, "name", "<unknown>")
+            for tc in tool_calls
+        ]
     except (AttributeError, TypeError, KeyError):
         return ["<unknown>"]
 

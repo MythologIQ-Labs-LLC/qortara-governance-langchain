@@ -3,6 +3,7 @@
 Provides LangSmith trace-viewer alignment: Qortara evidence records share
 trace IDs with LangSmith spans via standard W3C Trace Context propagation.
 """
+
 from __future__ import annotations
 
 from qortara_protocol.action import TraceContext
