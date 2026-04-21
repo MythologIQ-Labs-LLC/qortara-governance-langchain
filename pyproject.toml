@@ -44,3 +44,12 @@ packages = ["src/qortara_governance"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 asyncio_mode = "auto"
+
+[tool.mypy]
+python_version = "3.10"
+
+# qortara-protocol 0.1.0 ships without a py.typed marker; allow the missing
+# stubs until 0.1.1+ adds the marker.
+[[tool.mypy.overrides]]
+module = "qortara_protocol.*"
+ignore_missing_imports = true
