@@ -5,6 +5,11 @@ on:
   push:
     branches: [main]
 
+env:
+  # Opt into Node.js 24 runtime for JavaScript actions before the June 2026
+  # forced migration. Clears the Node 20 deprecation warnings.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   test:
     runs-on: ubuntu-latest

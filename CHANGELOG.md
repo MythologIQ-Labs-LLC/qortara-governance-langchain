@@ -1,6 +1,6 @@
 # Changelog — qortara-governance-langchain
 
-## v0.1.0 — Unreleased
+## v0.1.0 — 2026-04-21
 
 First public release.
 
