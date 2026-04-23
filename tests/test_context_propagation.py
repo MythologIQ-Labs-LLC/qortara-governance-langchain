@@ -1,4 +1,5 @@
 """Context vars propagate through nested sync + async boundaries."""
+
 from __future__ import annotations
 
 import asyncio

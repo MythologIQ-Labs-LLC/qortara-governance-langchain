@@ -5,15 +5,19 @@ reliably block native tool-calling dispatch. This module patches the actual
 invoke methods on BaseTool so every dispatch path flows through policy.
 
 Exports:
-    apply() -> originals  # install patches; returns originals for unpatch
-    unpatch(originals)    # restore byte-identical originals
+    apply()              -> originals  (module-level; install patches)
+    unpatch(originals)                  (module-level; restore)
+    LangChainToolAdapter                (FrameworkAdapter class wrapping the above)
 """
+
 from __future__ import annotations
 
+from types import MappingProxyType
 from typing import Any, Callable
 
 from qortara_governance.client import SidecarClient
 from qortara_governance.context import get_context
+from qortara_governance.contract.state import CONTRACT_VERSION, AdapterState
 from qortara_governance.decorators import is_exempt
 from qortara_governance.exceptions import QortaraApprovalRequired, QortaraPolicyDenied
 from qortara_governance.patches.action_builder import build_tool_action
@@ -28,7 +32,6 @@ def _decide_or_raise(tool: object, tool_input: Any, client: SidecarClient) -> No
         return
     ctx = get_context()
     if ctx is None:
-        # No agent context = not governed; pass through.
         return
     tool_name = getattr(tool, "name", type(tool).__name__)
     request = build_tool_action(tool_name, tool_input, ctx)
@@ -47,7 +50,9 @@ def _decide_or_raise(tool: object, tool_input: Any, client: SidecarClient) -> No
         )
 
 
-def _make_sync_wrapper(original: _OriginalMethod, client: SidecarClient) -> _OriginalMethod:
+def _make_sync_wrapper(
+    original: _OriginalMethod, client: SidecarClient
+) -> _OriginalMethod:
     def wrapper(self: object, input: Any, config: Any = None, **kwargs: Any) -> Any:
         _decide_or_raise(self, input, client)
         return original(self, input, config, **kwargs)
@@ -58,8 +63,12 @@ def _make_sync_wrapper(original: _OriginalMethod, client: SidecarClient) -> _Ori
     return wrapper
 
 
-def _make_async_wrapper(original: _OriginalMethod, client: SidecarClient) -> _OriginalMethod:
-    async def wrapper(self: object, input: Any, config: Any = None, **kwargs: Any) -> Any:
+def _make_async_wrapper(
+    original: _OriginalMethod, client: SidecarClient
+) -> _OriginalMethod:
+    async def wrapper(
+        self: object, input: Any, config: Any = None, **kwargs: Any
+    ) -> Any:
         _decide_or_raise(self, input, client)
         return await original(self, input, config, **kwargs)
 
@@ -73,6 +82,18 @@ def apply(client: SidecarClient) -> dict[str, _OriginalMethod]:
     """Install BaseTool.invoke/ainvoke patches. Returns originals for unpatch."""
     from langchain_core.tools import BaseTool
 
+    if getattr(BaseTool.invoke, "__qortara_wrapped__", False):
+        raise RuntimeError(
+            "BaseTool.invoke is already wrapped by Qortara - refusing to "
+            "double-install. Call tool_patches.unpatch(originals) before "
+            "re-installing."
+        )
+    if getattr(BaseTool.ainvoke, "__qortara_wrapped__", False):
+        raise RuntimeError(
+            "BaseTool.ainvoke is already wrapped by Qortara - refusing to "
+            "double-install. Call tool_patches.unpatch(originals) before "
+            "re-installing."
+        )
     originals: dict[str, _OriginalMethod] = {
         "invoke": BaseTool.invoke,
         "ainvoke": BaseTool.ainvoke,
@@ -88,3 +109,23 @@ def unpatch(originals: dict[str, _OriginalMethod]) -> None:
 
     BaseTool.invoke = originals["invoke"]  # type: ignore[method-assign]
     BaseTool.ainvoke = originals["ainvoke"]  # type: ignore[method-assign]
+
+
+class LangChainToolAdapter:
+    """FrameworkAdapter wrapping BaseTool.invoke / BaseTool.ainvoke patches."""
+
+    name: str = "langchain-basetool"
+    framework_module: str = "langchain_core.tools"
+    contract_version: str = CONTRACT_VERSION
+
+    def apply(self, client: SidecarClient) -> AdapterState:
+        """Install patches and return an AdapterState snapshot of the originals."""
+        originals = apply(client)
+        return AdapterState(
+            adapter_name=self.name,
+            originals=MappingProxyType(dict(originals)),
+        )
+
+    def unpatch(self, state: AdapterState) -> None:
+        """Restore BaseTool methods from the snapshot in `state`."""
+        unpatch(dict(state.originals))

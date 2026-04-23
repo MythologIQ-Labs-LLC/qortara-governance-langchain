@@ -1,6 +1,6 @@
 [project]
 name = "qortara-governance-langchain"
-version = "0.1.0"
+version = "0.2.0"
 description = "Qortara Governance — LangChain sidecar SDK. Deep tool-dispatch interception + Portable Trust Attestations + policy enforcement companion to LangSmith."
 authors = [{ name = "MythologIQ Labs", email = "team@mythologiq.studio" }]
 license = { text = "Apache-2.0" }
@@ -21,12 +21,12 @@ dependencies = [
     "langchain-core>=0.3",
     "httpx>=0.28",
     "opentelemetry-api>=1.30",
-    "qortara-protocol==0.1.0",
+    "qortara-protocol==0.1.2",
 ]
 
 [project.optional-dependencies]
 langgraph = ["langgraph>=0.2"]
-dev = ["pytest>=9.0.3", "pytest-asyncio>=1.3.0"]
+dev = ["pytest>=9.0.3", "pytest-asyncio>=1.3.0", "mypy>=1.17", "ruff>=0.8"]
 
 [project.urls]
 Homepage = "https://qortara.com/governance"
@@ -44,3 +44,14 @@ packages = ["src/qortara_governance"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 asyncio_mode = "auto"
+
+[tool.mypy]
+python_version = "3.10"
+plugins = ["pydantic.mypy"]
+
+# qortara-protocol 0.1.0 ships without a py.typed marker; allow the missing
+# stubs until 0.1.1+ adds the marker. Retained at 0.1.2 pending operator
+# confirmation that the PyPI-published protocol wheel ships py.typed.
+[[tool.mypy.overrides]]
+module = "qortara_protocol.*"
+ignore_missing_imports = true

@@ -1,4 +1,5 @@
 """Context propagation via contextvars — thread-safe and async-safe."""
+
 from __future__ import annotations
 
 from contextvars import ContextVar
@@ -15,7 +16,9 @@ class AgentContext:
     workflow_id: str | None = None
 
 
-_ctx_var: ContextVar[AgentContext | None] = ContextVar("qortara_agent_ctx", default=None)
+_ctx_var: ContextVar[AgentContext | None] = ContextVar(
+    "qortara_agent_ctx", default=None
+)
 
 
 def set_context(ctx: AgentContext) -> None:

@@ -1,5 +1,28 @@
 # Changelog — qortara-governance-langchain
 
+## v0.2.0 — 2026-04-23
+
+### Added
+
+- `qortara_governance.contract` module — versioned `FrameworkAdapter` Protocol, frozen `AdapterState`, `CONTRACT_VERSION` constant, and an internal `ConformanceSuite` (not re-exported from `__init__` — importable via its module path). This is the extension point for future framework adapters.
+- `LangChainToolAdapter` and `LangGraphToolNodeAdapter` — the existing patch logic now implements the `FrameworkAdapter` Protocol. Module-level `apply()` / `unpatch()` functions preserved; the adapter classes delegate to them.
+- `AdapterRegistry` replaces the prior module-global patch state. Accepts a sequence of adapters; unwinds LIFO on `unpatch_all()`; rejects version mismatches with `IncompatibleAdapterVersion`.
+- `py.typed` marker — signals to mypy/pyright that this package ships type information.
+
+### Changed
+
+- Availability probe in `AdapterRegistry` now uses `importlib.util.find_spec` instead of `importlib.import_module`. Detecting whether a framework is installed no longer triggers that framework's import-time side effects. If `find_spec` resolves but the adapter's own `apply()` raises `ImportError` (broken submodule), the registry skips the adapter with the same `RuntimeWarning` path.
+- Module-level `tool_patches.apply()` and `langgraph_patches.apply()` reject double-install — calling `apply()` against `BaseTool.invoke` / `ainvoke` / `ToolNode.invoke` that is already `__qortara_wrapped__` raises `RuntimeError` with a remediation hint.
+- `qortara-protocol` dependency pin bumped to `==0.1.2` (additive protocol changes; see qortara-protocol CHANGELOG).
+
+### Fixed
+
+- n/a (no bug fixes; this release is additive + architectural).
+
+### License
+
+Apache-2.0.
+
 ## v0.1.0 — Unreleased
 
 First public release.

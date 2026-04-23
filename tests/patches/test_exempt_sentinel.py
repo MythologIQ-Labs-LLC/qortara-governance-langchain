@@ -1,4 +1,5 @@
 """@qortara_exempt: tool marked exempt skips sidecar roundtrip."""
+
 from __future__ import annotations
 
 from langchain_core.tools import BaseTool

@@ -17,6 +17,7 @@ What this test exercises:
 This test FAILING would mean the #73 gap is open. It PASSING proves the
 core value of the package.
 """
+
 from __future__ import annotations
 
 import pytest

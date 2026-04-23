@@ -1,4 +1,5 @@
 """Public exceptions raised by Qortara Governance SDK."""
+
 from __future__ import annotations
 
 
@@ -9,7 +10,9 @@ class QortaraError(Exception):
 class QortaraPolicyDenied(QortaraError):
     """Sidecar returned decision_kind=deny for the attempted action."""
 
-    def __init__(self, rationale: str, policy_pack_id: str, policy_version_sha256: str) -> None:
+    def __init__(
+        self, rationale: str, policy_pack_id: str, policy_version_sha256: str
+    ) -> None:
         self.rationale = rationale
         self.policy_pack_id = policy_pack_id
         self.policy_version_sha256 = policy_version_sha256
@@ -19,7 +22,9 @@ class QortaraPolicyDenied(QortaraError):
 class QortaraApprovalRequired(QortaraError):
     """Sidecar returned decision_kind=require_approval; caller must obtain approval."""
 
-    def __init__(self, rationale: str, approval_url: str | None, policy_pack_id: str) -> None:
+    def __init__(
+        self, rationale: str, approval_url: str | None, policy_pack_id: str
+    ) -> None:
         self.rationale = rationale
         self.approval_url = approval_url
         self.policy_pack_id = policy_pack_id

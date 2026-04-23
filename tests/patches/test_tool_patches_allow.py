@@ -1,4 +1,5 @@
 """Decision allow => inner tool called with original args."""
+
 from __future__ import annotations
 
 from langchain_core.tools import BaseTool

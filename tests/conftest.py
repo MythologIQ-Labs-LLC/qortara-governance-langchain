@@ -1,4 +1,5 @@
 """Shared test fixtures — FakeLangChain harness + FakeSidecar."""
+
 from __future__ import annotations
 
 import time
@@ -24,7 +25,9 @@ class FakeClient(SidecarClient):  # type: ignore[misc]
     evidence: list[EvidenceRecord] = field(default_factory=list)
     reachable: bool = True
 
-    def __init__(self, *, scripted: list[DecisionKind] | None = None, reachable: bool = True) -> None:
+    def __init__(
+        self, *, scripted: list[DecisionKind] | None = None, reachable: bool = True
+    ) -> None:
         self.scripted_decisions = list(scripted) if scripted else []
         self.decisions = []
         self.requests = []
@@ -36,7 +39,11 @@ class FakeClient(SidecarClient):  # type: ignore[misc]
 
     def decide(self, request: ActionRequest) -> ActionDecision:  # type: ignore[override]
         self.requests.append(request)
-        kind = self.scripted_decisions.pop(0) if self.scripted_decisions else DecisionKind.ALLOW
+        kind = (
+            self.scripted_decisions.pop(0)
+            if self.scripted_decisions
+            else DecisionKind.ALLOW
+        )
         decision = ActionDecision(
             decision_kind=kind,
             policy_version_sha256="f" * 64,
@@ -63,6 +70,16 @@ class FakeClient(SidecarClient):  # type: ignore[misc]
 @pytest.fixture
 def fake_client() -> FakeClient:
     return FakeClient()
+
+
+@pytest.fixture
+def fake_client_factory() -> Any:
+    """Return a zero-arg callable producing a fresh FakeClient each call."""
+
+    def _factory() -> FakeClient:
+        return FakeClient()
+
+    return _factory
 
 
 @pytest.fixture

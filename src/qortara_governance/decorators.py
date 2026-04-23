@@ -1,4 +1,5 @@
 """@qortara_exempt — opt-out marker for tools that must bypass enforcement."""
+
 from __future__ import annotations
 
 from typing import TypeVar

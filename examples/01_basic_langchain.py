@@ -37,7 +37,9 @@ def main() -> None:
 
     try:
         result = executor.invoke(
-            {"input": "Email alice@example.com with subject 'hello' and body 'hi there'."}
+            {
+                "input": "Email alice@example.com with subject 'hello' and body 'hi there'."
+            }
         )
         print("result:", result["output"])
     except QortaraPolicyDenied as denied:
