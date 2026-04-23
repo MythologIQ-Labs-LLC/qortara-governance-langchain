@@ -4,6 +4,7 @@ If QORTARA_SIDECAR_ENDPOINT is set, skips spawn and connects to an existing
 daemon. Otherwise spawns `qortara-governance-sidecar` as a subprocess bound
 to 127.0.0.1 on an OS-assigned port.
 """
+
 from __future__ import annotations
 
 import atexit
@@ -23,7 +24,9 @@ _SPAWN_POLL_S = 0.25
 @dataclass
 class LaunchResult:
     endpoint: str
-    spawned: bool  # True iff we own the subprocess; False if connected to external daemon
+    spawned: (
+        bool  # True iff we own the subprocess; False if connected to external daemon
+    )
     process: subprocess.Popen[bytes] | None = None
 
 

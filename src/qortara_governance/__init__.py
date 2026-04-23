@@ -7,10 +7,12 @@ Public API:
     qortara_exempt (decorator marking tools to skip enforcement)
     QortaraPolicyDenied / QortaraApprovalRequired / QortaraSidecarUnavailable
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
 
+from qortara_governance import contract
 from qortara_governance.callback import QortaraCallbackHandler
 from qortara_governance.client import SidecarClient
 from qortara_governance.config import Config, PolicyMode, load_config
@@ -25,7 +27,7 @@ from qortara_governance.exceptions import (
 from qortara_governance.launcher import launch
 from qortara_governance.patches import apply_patches, unpatch_all
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "AgentContext",
@@ -36,6 +38,7 @@ __all__ = [
     "QortaraError",
     "QortaraPolicyDenied",
     "QortaraSidecarUnavailable",
+    "contract",
     "get_context",
     "init",
     "is_exempt",

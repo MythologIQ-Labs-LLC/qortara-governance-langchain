@@ -1,4 +1,5 @@
 """OTel traceparent propagation — LangSmith trace correlation."""
+
 from __future__ import annotations
 
 import pytest

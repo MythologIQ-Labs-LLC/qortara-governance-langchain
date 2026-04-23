@@ -2,6 +2,7 @@
 
 Precedence: init() kwarg > env var > default.
 """
+
 from __future__ import annotations
 
 import os
@@ -29,7 +30,9 @@ def _env_policy_mode(raw: str | None) -> PolicyMode:
     if raw is None:
         return PolicyMode.ENFORCE
     if raw not in _VALID_MODES:
-        raise ValueError(f"Invalid QORTARA_POLICY_MODE={raw!r}; must be one of {_VALID_MODES}")
+        raise ValueError(
+            f"Invalid QORTARA_POLICY_MODE={raw!r}; must be one of {_VALID_MODES}"
+        )
     return PolicyMode(raw)
 
 
@@ -51,7 +54,9 @@ def load_config(
         mode = policy_mode
     else:
         if policy_mode not in _VALID_MODES:
-            raise ValueError(f"Invalid policy_mode={policy_mode!r}; must be one of {_VALID_MODES}")
+            raise ValueError(
+                f"Invalid policy_mode={policy_mode!r}; must be one of {_VALID_MODES}"
+            )
         mode = PolicyMode(policy_mode)
 
     return Config(

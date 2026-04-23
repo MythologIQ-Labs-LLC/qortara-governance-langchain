@@ -1,4 +1,5 @@
 """Decision deny => QortaraPolicyDenied raised; inner tool never called."""
+
 from __future__ import annotations
 
 import pytest

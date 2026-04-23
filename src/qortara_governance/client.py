@@ -4,6 +4,7 @@ Circuit breaker: after _BREAKER_THRESHOLD consecutive 5xx responses,
 fail closed to deny-all for _BREAKER_COOLDOWN seconds. Recovers on
 any successful health check.
 """
+
 from __future__ import annotations
 
 import time
@@ -38,12 +39,20 @@ def _deny_all(rationale: str) -> ActionDecision:
 class SidecarClient:
     """httpx-based sidecar client with circuit breaker and deny-closed failure."""
 
-    def __init__(self, endpoint: str, tenant_key: str | None, *, timeout_s: float = _DEFAULT_TIMEOUT_S) -> None:
+    def __init__(
+        self,
+        endpoint: str,
+        tenant_key: str | None,
+        *,
+        timeout_s: float = _DEFAULT_TIMEOUT_S,
+    ) -> None:
         self._endpoint = endpoint.rstrip("/")
         self._headers: dict[str, str] = {}
         if tenant_key:
             self._headers["Ocp-Apim-Subscription-Key"] = tenant_key
-        self._client = httpx.Client(base_url=self._endpoint, headers=self._headers, timeout=timeout_s)
+        self._client = httpx.Client(
+            base_url=self._endpoint, headers=self._headers, timeout=timeout_s
+        )
         self._breaker = _BreakerState()
 
     def close(self) -> None:
@@ -76,7 +85,9 @@ class SidecarClient:
         if self._breaker_tripped():
             return _deny_all("sidecar circuit breaker tripped — deny-closed")
         try:
-            resp = self._client.post("/v0.1/decisions", json=request.model_dump(mode="json"))
+            resp = self._client.post(
+                "/v0.1/decisions", json=request.model_dump(mode="json")
+            )
             if resp.status_code >= 500:
                 self._record_failure()
                 return _deny_all(f"sidecar 5xx: {resp.status_code}")

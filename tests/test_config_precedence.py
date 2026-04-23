@@ -1,4 +1,5 @@
 """Config: env > kwarg > default precedence."""
+
 from __future__ import annotations
 
 import pytest
