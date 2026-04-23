@@ -85,6 +85,24 @@ def read_clock() -> str:
 
 Exempt tools still emit evidence records so audits remain complete.
 
+## Scope
+
+This package is an enforcement point, not a complete governance system. The split is intentional:
+
+| Concern | Where it lives |
+|---|---|
+| Tool-dispatch interception | SDK (this package) |
+| Local policy evaluation | Sidecar (bundled) |
+| Evidence signing (Ed25519, JCS, SHA-256) | Sidecar |
+| Policy authoring, versioning, distribution | Qortara Cloud Governance *(separate, hosted)* — or a local policy pack |
+| Cross-organization identity, trust, and federation | Qortara Cloud Governance |
+| Multi-tenant evidence ledger and retention | Qortara Cloud Governance |
+| Compliance reporting and audit surfaces | Qortara Cloud Governance |
+
+The SDK and sidecar run standalone. With `QORTARA_OFFLINE_POLICY` set and no `tenant_key`, the sidecar evaluates against the local policy pack and writes evidence to local storage — suitable for air-gapped environments. Providing a `tenant_key` adds hosted policy distribution, cross-organization federation, and long-term evidence retention via Qortara Cloud Governance. Nothing in this package requires the hosted plane.
+
+This keeps the enforcement point minimal and auditable, while letting governance concerns that need shared state — multi-agent trust, cross-organization policy, retention, compliance — live where shared state belongs.
+
 ## Sidecar
 
 The SDK talks to a local sidecar process over HTTP. Two run modes are supported:
